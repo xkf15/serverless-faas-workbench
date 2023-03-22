@@ -52,12 +52,12 @@ def main(event):
     aws_secret_access_key = event['aws_secret_access_key']
     metadata = event['metadata']
 
-    s3_client = boto3.client('s3',
-                    endpoint_url=endpoint_url,
-                    aws_access_key_id=aws_access_key_id,
-                    aws_secret_access_key=aws_secret_access_key)#,                                                                                                                                                                                                                                                                                                            
-                    #config=Config(signature_version='s3v4'),                                                                                                                                                                                                                                                                                                                 
-                    #region_name='us-east-1')                                                                                                                                                                                                                                                                                                                                 
+    # s3_client = boto3.client('s3',
+    #                 endpoint_url=endpoint_url,
+    #                 aws_access_key_id=aws_access_key_id,
+    #                 aws_secret_access_key=aws_secret_access_key)#,                                                                                                                                                                                                                                                                                                            
+    #                 #config=Config(signature_version='s3v4'),                                                                                                                                                                                                                                                                                                                 
+    #                 #region_name='us-east-1')                                                                                                                                                                                                                                                                                                                                 
 
     download_path = tmp+'{}{}'.format(uuid.uuid4(), object_key)
 
