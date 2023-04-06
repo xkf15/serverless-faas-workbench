@@ -1,5 +1,5 @@
-import boto3
-import uuid
+# import boto3
+# import uuid
 from time import time
 from PIL import Image
 
@@ -29,35 +29,39 @@ def main(event):
     timestamps = {}
     timestamps["starting_time"] = time()
 
-    input_bucket = event['input_bucket']
-    object_key = event['object_key']
-    output_bucket = event['output_bucket']
-    endpoint_url = event['endpoint_url']
-    aws_access_key_id = event['aws_access_key_id']
-    aws_secret_access_key = event['aws_secret_access_key']
-    metadata = event['metadata']
+    # input_bucket = event['input_bucket']
+    # object_key = event['object_key']
+    # output_bucket = event['output_bucket']
+    # endpoint_url = event['endpoint_url']
+    # aws_access_key_id = event['aws_access_key_id']
+    # aws_secret_access_key = event['aws_secret_access_key']
+    # metadata = event['metadata']
 
-    s3_client = boto3.client('s3',
-                    endpoint_url=endpoint_url,
-                    aws_access_key_id=aws_access_key_id,
-                    aws_secret_access_key=aws_secret_access_key)#,                                                                                                                                                                                                                                                                                                            
-                    #config=Config(signature_version='s3v4'),                                                                                                                                                                                                                                                                                                                 
-                    #region_name='us-east-1')   
-    start = time()
-    download_path = '/tmp/{}{}'.format(uuid.uuid4(), object_key)
-    s3_client.download_file(input_bucket, object_key, download_path)
-    download_latency = time() - start
-    latencies["download_data"] = download_latency
+    # s3_client = boto3.client('s3',
+    #                 endpoint_url=endpoint_url,
+    #                 aws_access_key_id=aws_access_key_id,
+    #                 aws_secret_access_key=aws_secret_access_key)#,                                                                                                                                                                                                                                                                                                            
+    #                 #config=Config(signature_version='s3v4'),                                                                                                                                                                                                                                                                                                                 
+    #                 #region_name='us-east-1')   
+    # start = time()
+    # download_path = '/tmp/{}{}'.format(uuid.uuid4(), object_key)
+    # s3_client.download_file(input_bucket, object_key, download_path)
+    # download_latency = time() - start
+    # latencies["download_data"] = download_latency
+
+    download_path = "/tmp/dataset/image/animal-dog.jpg"
+    object_key = "animal-dog.jpg"
 
     image_processing_latency, path_list = image_processing(object_key, download_path)
     latencies["function_execution"] = image_processing_latency
     print("PATH_LIST OUTSIDE", path_list)
 
-    start = time()
-    for upload_path in path_list:
-        s3_client.upload_file(upload_path, output_bucket, upload_path.split("/")[FILE_NAME_INDEX])
-    upload_latency = time() - start
-    latencies["upload_data"] = upload_latency
-    timestamps["finishing_time"] = time()
+    # start = time()
+    # for upload_path in path_list:
+    #     s3_client.upload_file(upload_path, output_bucket, upload_path.split("/")[FILE_NAME_INDEX])
+    # upload_latency = time() - start
+    # latencies["upload_data"] = upload_latency
+    # timestamps["finishing_time"] = time()
 
-    return {"latencies": latencies, "timestamps": timestamps, "metadata": metadata}
+    # return {"latencies": latencies, "timestamps": timestamps, "metadata": metadata}
+    return {"latencies": latencies}
