@@ -1,9 +1,11 @@
-import boto3
-import uuid
+# import boto3
+# import uuid
 from time import time
 import cv2
 
-tmp = "/tmp/"
+tmp = "/tmp/dataset/"
+# tmp = "/home/kaifengx/serverless-faas-workbench/dataset/"
+
 FILE_NAME_INDEX = 0
 FILE_PATH_INDEX = 2
 
@@ -52,39 +54,45 @@ def main(event):
     
     timestamps["starting_time"] = time()
     
-    input_bucket = event['input_bucket']
-    object_key = event['object_key']
-    output_bucket = event['output_bucket']
-    model_object_key = event['model_object_key'] # example : haarcascade_frontalface_default.xml
-    model_bucket = event['model_bucket'] # input_bucket as well
-    endpoint_url = event['endpoint_url']
-    aws_access_key_id = event['aws_access_key_id']
-    aws_secret_access_key = event['aws_secret_access_key']
-    metadata = event['metadata']
+    # input_bucket = event['input_bucket']
+    object_key = "SampleVideo_1280x720_10mb.mp4" # event['object_key']
+    # output_bucket = event['output_bucket']
+    model_object_key = "haarcascade_frontalface_default.xml" # event['model_object_key'] # example : haarcascade_frontalface_default.xml
+    # model_bucket = event['model_bucket'] # input_bucket as well
+    # endpoint_url = event['endpoint_url']
+    # aws_access_key_id = event['aws_access_key_id']
+    # aws_secret_access_key = event['aws_secret_access_key']
+    # metadata = event['metadata']
 
-    s3_client = boto3.client('s3',
-                    endpoint_url=endpoint_url,
-                    aws_access_key_id=aws_access_key_id,
-                    aws_secret_access_key=aws_secret_access_key)#,                                                                                                                                                                                                                                                                                                            
-                    #config=Config(signature_version='s3v4'),                                                                                                                                                                                                                                                                                                                 
-                    #region_name='us-east-1')  
+    # s3_client = boto3.client('s3',
+    #                 endpoint_url=endpoint_url,
+    #                 aws_access_key_id=aws_access_key_id,
+    #                 aws_secret_access_key=aws_secret_access_key)#,                                                                                                                                                                                                                                                                                                            
+    #                 #config=Config(signature_version='s3v4'),                                                                                                                                                                                                                                                                                                                 
+    #                 #region_name='us-east-1')  
 
-    download_path = tmp+'{}{}'.format(uuid.uuid4(), object_key)
-    model_path = tmp + '{}{}'.format(uuid.uuid4(), model_object_key)
+    # download_path = tmp+'{}{}'.format(uuid.uuid4(), object_key)
+    # model_path = tmp + '{}{}'.format(uuid.uuid4(), model_object_key)
+    download_path = tmp + "video/" + object_key
+    model_path = tmp + "model/" + model_object_key
 
-    start = time()
-    s3_client.download_file(input_bucket, object_key, download_path)
-    s3_client.download_file(model_bucket, model_object_key, model_path)    
-    download_data = time() - start
-    latencies["download_data"] = download_data
+    # start = time()
+    # s3_client.download_file(input_bucket, object_key, download_path)
+    # s3_client.download_file(model_bucket, model_object_key, model_path)    
+    # download_data = time() - start
+    # latencies["download_data"] = download_data
 
     function_execution, upload_path = video_processing(object_key, download_path, model_path)
-    latencies["function_execution"] = download_data
+    latencies["function_execution"] = function_execution
 
-    start = time()
-    s3_client.upload_file(upload_path, output_bucket, upload_path.split("/")[FILE_PATH_INDEX])
-    upload_data = time() - start
-    latencies["upload_data"] = upload_data
-    timestamps["finishing_time"] = time()
+    # start = time()
+    # s3_client.upload_file(upload_path, output_bucket, upload_path.split("/")[FILE_PATH_INDEX])
+    # upload_data = time() - start
+    # latencies["upload_data"] = upload_data
+    # timestamps["finishing_time"] = time()
 
-    return {"latencies": latencies, "timestamps": timestamps, "metadata": metadata}
+    # return {"latencies": latencies, "timestamps": timestamps, "metadata": metadata}
+    return {"latencies": latencies}
+
+if __name__ == '__main__':
+    main("")
